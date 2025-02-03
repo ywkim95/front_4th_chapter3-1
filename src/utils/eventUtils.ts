@@ -15,7 +15,7 @@ function containsTerm(target: string, term: string) {
 function searchEvents(events: Event[], term: string) {
   return events.filter(
     ({ title, description, location }) =>
-      containsTerm(title, term) || containsTerm(description, term) || containsTerm(location, term)
+      containsTerm(title, term) || containsTerm(description, term) || containsTerm(location, term),
   );
 }
 
@@ -26,7 +26,7 @@ function filterEventsByDateRangeAtWeek(events: Event[], currentDate: Date) {
 
 function filterEventsByDateRangeAtMonth(events: Event[], currentDate: Date) {
   const monthStart = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
-  const monthEnd = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0);
+  const monthEnd = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0, 23, 59, 59);
   return filterEventsByDateRange(events, monthStart, monthEnd);
 }
 
@@ -34,7 +34,7 @@ export function getFilteredEvents(
   events: Event[],
   searchTerm: string,
   currentDate: Date,
-  view: 'week' | 'month'
+  view: 'week' | 'month',
 ): Event[] {
   const searchedEvents = searchEvents(events, searchTerm);
 
