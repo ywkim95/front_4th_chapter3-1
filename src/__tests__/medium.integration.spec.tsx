@@ -2,15 +2,41 @@ import { ChakraProvider } from '@chakra-ui/react';
 import { render, screen, within, act } from '@testing-library/react';
 import { UserEvent, userEvent } from '@testing-library/user-event';
 import { http, HttpResponse } from 'msw';
-import { ReactElement } from 'react';
+import React, { ReactElement } from 'react';
 
 import App from '../App';
 import { server } from '../setupTests';
 import { Event } from '../types';
 
 describe('일정 CRUD 및 기본 기능', () => {
+  const renderApp = () =>
+    render(
+      <ChakraProvider>
+        <App />
+      </ChakraProvider>,
+    );
   it('입력한 새로운 일정 정보에 맞춰 모든 필드가 이벤트 리스트에 정확히 저장된다.', async () => {
     // ! HINT. event를 추가 제거하고 저장하는 로직을 잘 살펴보고, 만약 그대로 구현한다면 어떤 문제가 있을 지 고민해보세요.
+    const user = userEvent.setup();
+    renderApp();
+
+    // 일정 추가 폼에 일정 정보 입력
+    const titleInput = screen.getByLabelText(/제목/i);
+    const contentInput = screen.getByLabelText(/내용/i);
+    const startDateInput = screen.getByLabelText(/시작일/i);
+    const startTimeInput = screen.getByLabelText(/시작 시간/i);
+    const endTimeInput = screen.getByLabelText(/종료 시간/i);
+    const descriptionInput = screen.getByLabelText(/설명/i);
+    const locationInput = screen.getByLabelText(/위치/i);
+    const categoryInput = screen.getByLabelText(/카테고리/i);
+    const repeatCheckbox = screen.getByRole('input', { name: /반복/i });
+    const alarmSelect = screen.getByLabelText(/알람 설정/i);
+    const repeatTypeSelect = screen.getByLabelText(/반복 유형/i);
+    const repeatTermInput = screen.getByLabelText(/반복 간격/i);
+    const repeatEndDateInput = screen.getByLabelText(/반복 종료일/i);
+
+    // 일정 추가 버튼 클릭
+    // await userEvent.click(screen.getByRole('button', { name: /일정 추가/i }));
   });
 
   it('기존 일정의 세부 정보를 수정하고 변경사항이 정확히 반영된다', async () => {});
