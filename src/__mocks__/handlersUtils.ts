@@ -25,7 +25,7 @@ export const setupMockHandlerDeletion = () => {
 };
 
 export const getEvents = (events: Event[]) =>
-  http.get('/api/events', () => HttpResponse.json(events));
+  http.get('/api/events', () => HttpResponse.json({ events }));
 
 export const createEvent = (events: Event[]) =>
   http.post('/api/events', async ({ request }) => {
