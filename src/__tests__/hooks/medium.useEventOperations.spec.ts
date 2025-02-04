@@ -1,5 +1,7 @@
-import { act, renderHook, waitFor } from '@testing-library/react';
+import { useToast } from '@chakra-ui/react';
+import { act, findByText, renderHook, waitFor } from '@testing-library/react';
 import { http, HttpResponse } from 'msw';
+import { beforeEach } from 'vitest';
 
 import {
   setupMockHandlerCreation,
@@ -10,15 +12,17 @@ import { events } from '../../__mocks__/response/events.json' assert { type: 'js
 import { useEventOperations } from '../../hooks/useEventOperations.ts';
 import { server } from '../../setupTests.ts';
 import { Event, EventForm } from '../../types.ts';
-
-let onSave = vi.fn();
-
-beforeEach(() => {
-  onSave = vi.fn();
+const mockToast = vi.fn();
+vi.mock('@chakra-ui/react', async () => {
+  const actual = await vi.importActual('@chakra-ui/react');
+  return {
+    ...actual,
+    useToast: () => mockToast,
+  };
 });
 
 it('저장되어있는 초기 이벤트 데이터를 적절하게 불러온다', async () => {
-  setupMockHandlerCreation(events);
+  setupMockHandlerCreation(events as Event[]);
 
   const { result } = renderHook(() => useEventOperations(false));
 
@@ -38,15 +42,22 @@ it('새로운 이벤트 정보를 입력하면 이벤트가 저장된다.', asyn
     notificationTime: 10,
   };
 
-  setupMockHandlerCreation(events);
+  setupMockHandlerCreation([] as Event[]);
 
-  const { result } = renderHook(() => useEventOperations(false, onSave));
+  const { result } = renderHook(() => useEventOperations(false));
 
   act(() => {
     result.current.saveEvent(newEvent);
   });
 
-  await waitFor(() => expect(onSave).toHaveBeenCalledOnce());
+  const updatedEvents = [
+    {
+      id: '1',
+      ...newEvent,
+    },
+  ];
+
+  await waitFor(() => expect(result.current.events).toEqual(updatedEvents));
 });
 
 it('기존 이벤트 정보를 기반으로 적절하게 업데이트를 한다.', async () => {
@@ -65,21 +76,117 @@ it('기존 이벤트 정보를 기반으로 적절하게 업데이트를 한다.
 
   setupMockHandlerUpdating();
 
-  const { result } = renderHook(() => useEventOperations(true, onSave));
+  const { result } = renderHook(() => useEventOperations(true));
 
   act(() => {
     result.current.saveEvent(updatedEvent);
   });
 
-  await waitFor(() => expect(onSave).toHaveBeenCalledOnce());
+  await waitFor(() => expect(result.current.events).toEqual([updatedEvent]));
 });
 
-it("새로 정의된 'title', 'endTime' 기준으로 적절하게 일정이 업데이트 된다", async () => {});
+it("새로 정의된 'title', 'endTime' 기준으로 적절하게 일정이 업데이트 된다", async () => {
+  const updatedEvent: Event = {
+    id: '1',
+    title: '기존 회의 수정',
+    date: '2024-10-16',
+    startTime: '15:00',
+    endTime: '16:00',
+    description: '기존 팀 미팅',
+    location: '회의실 B',
+    category: '업무',
+    repeat: { type: 'none', interval: 0 },
+    notificationTime: 10,
+  };
 
-it('존재하는 이벤트 삭제 시 에러없이 아이템이 삭제된다.', async () => {});
+  setupMockHandlerUpdating();
 
-it("이벤트 로딩 실패 시 '이벤트 로딩 실패'라는 텍스트와 함께 에러 토스트가 표시되어야 한다", async () => {});
+  const { result } = renderHook(() => useEventOperations(true));
 
-it("존재하지 않는 이벤트 수정 시 '일정 저장 실패'라는 토스트가 노출되며 에러 처리가 되어야 한다", async () => {});
+  act(() => {
+    result.current.saveEvent(updatedEvent);
+  });
 
-it("네트워크 오류 시 '일정 삭제 실패'라는 텍스트가 노출되며 이벤트 삭제가 실패해야 한다", async () => {});
+  await waitFor(() => expect(result.current.events).toEqual([updatedEvent]));
+});
+
+it('존재하는 이벤트 삭제 시 에러없이 아이템이 삭제된다.', async () => {
+  setupMockHandlerDeletion();
+
+  const { result } = renderHook(() => useEventOperations(false));
+
+  await act(async () => {
+    await result.current.deleteEvent('1');
+  });
+
+  await waitFor(() => {
+    expect(result.current.events).toHaveLength(0);
+  });
+});
+
+it("이벤트 로딩 실패 시 '이벤트 로딩 실패'라는 텍스트와 함께 에러 토스트가 표시되어야 한다", async () => {
+  server.use(http.get('/api/events', () => new HttpResponse(null, { status: 500 })));
+
+  renderHook(() => useEventOperations(false));
+
+  await waitFor(() => {
+    expect(mockToast).toHaveBeenCalledWith({
+      title: '이벤트 로딩 실패',
+      status: 'error',
+      duration: 3000,
+      isClosable: true,
+    });
+  });
+});
+
+it("존재하지 않는 이벤트 수정 시 '일정 저장 실패'라는 토스트가 노출되며 에러 처리가 되어야 한다", async () => {
+  const missingEvent: Event = {
+    id: '2',
+    title: '기존 회의 수정',
+    date: '2024-10-16',
+    startTime: '15:00',
+    endTime: '16:00',
+    description: '기존 팀 미팅',
+    location: '회의실 B',
+    category: '업무',
+    repeat: { type: 'none', interval: 0 },
+    notificationTime: 10,
+  };
+  setupMockHandlerUpdating();
+  const { result } = renderHook(() => useEventOperations(true));
+
+  act(() => {
+    result.current.saveEvent(missingEvent);
+  });
+
+  await waitFor(() => {
+    expect(mockToast).toHaveBeenCalledWith({
+      title: '일정 저장 실패',
+      status: 'error',
+      duration: 3000,
+      isClosable: true,
+    });
+  });
+});
+
+it("네트워크 오류 시 '일정 삭제 실패'라는 텍스트가 노출되며 이벤트 삭제가 실패해야 한다", async () => {
+  server.use(
+    http.get('api/events', () => HttpResponse.json(events, { status: 200 })),
+    http.delete('/api/events/:id', () => new HttpResponse(null, { status: 500 })),
+  );
+
+  const { result } = renderHook(() => useEventOperations(false));
+
+  await act(async () => {
+    await result.current.deleteEvent('1');
+  });
+
+  await waitFor(() => {
+    expect(mockToast).toHaveBeenCalledWith({
+      title: '일정 삭제 실패',
+      status: 'error',
+      duration: 3000,
+      isClosable: true,
+    });
+  });
+});
