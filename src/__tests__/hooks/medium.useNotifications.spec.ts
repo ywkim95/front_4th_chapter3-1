@@ -69,6 +69,13 @@ it('index를 기준으로 알림을 적절하게 제거할 수 있다', () => {
     vi.advanceTimersByTime(1000);
   });
 
+  expect(result.current.notifications).toEqual([
+    {
+      id: '1',
+      message: '10분 후 기존 회의 일정이 시작됩니다.',
+    },
+  ]);
+
   act(() => {
     result.current.removeNotification(0);
   });
