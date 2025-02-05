@@ -6,12 +6,7 @@ import { assertDate } from '../utils.ts';
 
 describe('useCalendarView', () => {
   beforeEach(() => {
-    vi.useFakeTimers();
     vi.setSystemTime(new Date('2024-10-01'));
-  });
-
-  afterEach(() => {
-    vi.useRealTimers();
   });
 
   describe('초기 상태', () => {
