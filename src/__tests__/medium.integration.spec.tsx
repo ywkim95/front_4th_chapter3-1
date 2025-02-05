@@ -125,7 +125,6 @@ describe('일정 CRUD 및 기본 기능', () => {
     const eventList = screen.getByTestId('event-list');
 
     await waitFor(() => {
-      screen.debug(eventList);
       expect(eventList).toHaveTextContent('신규 팀 회의');
     });
   });
