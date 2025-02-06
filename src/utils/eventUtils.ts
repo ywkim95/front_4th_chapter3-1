@@ -1,5 +1,6 @@
-import { Event } from '../types';
+import { Event, EventForm } from '../types';
 import { getWeekDates, isDateInRange } from './dateUtils';
+import { useEventForm } from '../hooks/useEventForm.ts';
 
 function filterEventsByDateRange(events: Event[], start: Date, end: Date): Event[] {
   return events.filter((event) => {
@@ -47,4 +48,23 @@ export function getFilteredEvents(
   }
 
   return searchedEvents;
+}
+
+export function getEventData(eventForm: ReturnType<typeof useEventForm>): Event | EventForm {
+  return {
+    id: eventForm.editingEvent ? eventForm.editingEvent.id : undefined,
+    title: eventForm.title,
+    date: eventForm.date,
+    startTime: eventForm.startTime,
+    endTime: eventForm.endTime,
+    description: eventForm.description,
+    location: eventForm.location,
+    category: eventForm.category,
+    repeat: {
+      type: eventForm.isRepeating ? eventForm.repeatType : 'none',
+      interval: eventForm.repeatInterval,
+      endDate: eventForm.repeatEndDate || undefined,
+    },
+    notificationTime: eventForm.notificationTime,
+  };
 }
