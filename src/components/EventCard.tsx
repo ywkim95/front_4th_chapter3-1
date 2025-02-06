@@ -16,7 +16,7 @@ const EventCard = ({ event, isNotified, editEvent, deleteEvent }: EventCardProps
     <HStack justifyContent='space-between'>
       <VStack align='start'>
         <HStack>
-          {isNotified && <BellIcon color='red.500' />}
+          {isNotified && <BellIcon data-testid='BellIcon' color='red.500' />}
           <Text
             fontWeight={isNotified ? 'bold' : 'normal'}
             color={isNotified ? 'red.500' : 'inherit'}>
