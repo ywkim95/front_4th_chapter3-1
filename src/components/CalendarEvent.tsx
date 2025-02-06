@@ -18,7 +18,7 @@ const CalendarEvent = ({ event, isNotified }: CalendarEventProps) => (
     fontWeight={isNotified ? 'bold' : 'normal'}
     color={isNotified ? 'red.500' : 'inherit'}>
     <HStack spacing={1}>
-      {isNotified && <BellIcon />}
+      {isNotified && <BellIcon data-testid='BellIcon' />}
       <Text fontSize='sm' noOfLines={1}>
         {event.title}
       </Text>
