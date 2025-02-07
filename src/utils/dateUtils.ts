@@ -1,4 +1,4 @@
-import { Event } from '../types.ts';
+import { Event, RepeatType } from '../types.ts';
 
 /**
  * 주어진 년도와 월의 일수를 반환합니다.
@@ -69,8 +69,9 @@ export function formatWeek(targetDate: Date) {
   const firstThursday = new Date(firstDayOfMonth);
   firstThursday.setDate(1 + ((4 - firstDayOfMonth.getDay() + 7) % 7));
 
+  const MS_PER_WEEK = 1000 * 60 * 60 * 24 * 7;
   const weekNumber: number =
-    Math.floor((thursday.getTime() - firstThursday.getTime()) / (7 * 24 * 60 * 60 * 1000)) + 1;
+    Math.floor((thursday.getTime() - firstThursday.getTime()) / MS_PER_WEEK) + 1;
 
   return `${year}년 ${month}월 ${weekNumber}주`;
 }
@@ -101,4 +102,30 @@ export function formatDate(currentDate: Date, day?: number) {
     fillZero(currentDate.getMonth() + 1),
     fillZero(day ?? currentDate.getDate()),
   ].join('-');
+}
+
+export function updateDate(direction: 'prev' | 'next', view: 'week' | 'month', prevDate: Date) {
+  const newDate = new Date(prevDate);
+  if (view === 'week') {
+    newDate.setDate(newDate.getDate() + (direction === 'next' ? 7 : -7));
+  } else if (view === 'month') {
+    newDate.setDate(1); // 항상 1일로 설정
+    newDate.setMonth(newDate.getMonth() + (direction === 'next' ? 1 : -1));
+  }
+  return newDate;
+}
+
+export function getDateUnit(dateType: RepeatType) {
+  switch (dateType) {
+    case 'daily':
+      return '일';
+    case 'weekly':
+      return '주';
+    case 'monthly':
+      return '월';
+    case 'yearly':
+      return '년';
+    default:
+      return null;
+  }
 }
