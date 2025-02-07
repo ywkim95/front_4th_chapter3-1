@@ -51,8 +51,8 @@ export const useEventOperations = (editing: boolean, onSave?: () => void) => {
       await fetchEvents();
       onSave?.();
       toast({
-        title: editing ? TOAST_MESSAGES.SAVE_SUCCESS : TOAST_MESSAGES.SAVE_SUCCESS,
-        status: 'success',
+        title: editing ? TOAST_MESSAGES.MODIFY_SUCCESS : TOAST_MESSAGES.SAVE_SUCCESS,
+        status: TOAST_STATUS.SUCCESS,
         duration: DEFAULT_TOAST_DURATION,
         isClosable: true,
       });
@@ -94,12 +94,12 @@ export const useEventOperations = (editing: boolean, onSave?: () => void) => {
   };
 
   async function init() {
-    const DURATION = 1000;
+    const DURATION_NOT_CLOSABLE = 1000;
     await fetchEvents();
     toast({
       title: TOAST_MESSAGES.LOAD_SUCCESS,
       status: TOAST_STATUS.INFO,
-      duration: DURATION,
+      duration: DURATION_NOT_CLOSABLE,
     });
   }
 
