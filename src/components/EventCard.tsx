@@ -1,8 +1,9 @@
 import { BellIcon, DeleteIcon, EditIcon } from '@chakra-ui/icons';
 import { Box, HStack, IconButton, Text, VStack } from '@chakra-ui/react';
 
-import { notificationOptions } from '../config.ts';
 import { Event } from '../types.ts';
+import { getDateUnit } from '../utils/dateUtils.ts';
+import { getNotificationLabel } from '../utils/notificationUtils.ts';
 
 interface EventCardProps {
   event: Event;
@@ -33,18 +34,12 @@ const EventCard = ({ event, isNotified, editEvent, deleteEvent }: EventCardProps
         {event.repeat.type !== 'none' && (
           <Text>
             반복: {event.repeat.interval}
-            {event.repeat.type === 'daily' && '일'}
-            {event.repeat.type === 'weekly' && '주'}
-            {event.repeat.type === 'monthly' && '월'}
-            {event.repeat.type === 'yearly' && '년'}
+            {getDateUnit(event.repeat.type)}
             마다
             {event.repeat.endDate && ` (종료: ${event.repeat.endDate})`}
           </Text>
         )}
-        <Text>
-          알림:{' '}
-          {notificationOptions.find((option) => option.value === event.notificationTime)?.label}
-        </Text>
+        <Text>알림: {getNotificationLabel(event.notificationTime)}</Text>
       </VStack>
       <HStack>
         <IconButton aria-label='Edit event' icon={<EditIcon />} onClick={() => editEvent(event)} />
