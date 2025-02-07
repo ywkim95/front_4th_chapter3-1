@@ -1,8 +1,7 @@
 import { ChakraProvider } from '@chakra-ui/react';
-import { render, screen, within, act, waitFor, fireEvent } from '@testing-library/react';
-import { UserEvent, userEvent } from '@testing-library/user-event';
+import { render, screen, within, waitFor } from '@testing-library/react';
+import { userEvent } from '@testing-library/user-event';
 import { http, HttpResponse } from 'msw';
-import React, { ReactElement } from 'react';
 import { beforeEach } from 'vitest';
 
 import App from '../App';
@@ -186,6 +185,7 @@ describe('일정 CRUD 및 기본 기능', () => {
 });
 
 describe('일정 뷰', () => {
+  // eslint-disable-next-line sonarjs/no-identical-functions
   const renderApp = () =>
     render(
       <ChakraProvider>
@@ -315,6 +315,7 @@ describe('일정 뷰', () => {
 });
 
 describe('검색 기능', () => {
+  // eslint-disable-next-line sonarjs/no-identical-functions
   const renderApp = () =>
     render(
       <ChakraProvider>
@@ -454,6 +455,7 @@ describe('검색 기능', () => {
 });
 
 describe('일정 충돌', () => {
+  // eslint-disable-next-line sonarjs/no-identical-functions
   const renderApp = () =>
     render(
       <ChakraProvider>
@@ -596,7 +598,6 @@ it('notificationTime을 10으로 하면 지정 시간 10분 전 알람 텍스트
       <App />
     </ChakraProvider>,
   );
-  const user = userEvent.setup({ delay: null });
 
   const prevEventList = screen.getByTestId('event-list');
   await waitFor(() => {
