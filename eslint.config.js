@@ -8,7 +8,6 @@ import eslintPluginPrettier from 'eslint-plugin-prettier';
 import react from 'eslint-plugin-react';
 import reactHooks from 'eslint-plugin-react-hooks';
 import security from 'eslint-plugin-security';
-import sonarjs from 'eslint-plugin-sonarjs';
 import storybook from 'eslint-plugin-storybook';
 import unicorn from 'eslint-plugin-unicorn';
 import vitest from 'eslint-plugin-vitest';
@@ -18,7 +17,6 @@ export default [
   {
     ignores: ['**/node_modules/**', 'dist/**'],
   },
-  sonarjs.configs.recommended,
   {
     files: ['**/*.{js,jsx,ts,tsx}'],
     languageOptions: {
@@ -97,10 +95,6 @@ export default [
       'security/detect-object-injection': 'warn',
       'security/detect-non-literal-require': 'warn',
       'security/detect-eval-with-expression': 'error',
-
-      // SonarJS
-      'sonarjs/cognitive-complexity': 'warn',
-      'sonarjs/no-identical-expressions': 'warn',
     },
   },
   {
