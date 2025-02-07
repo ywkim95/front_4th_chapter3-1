@@ -36,13 +36,12 @@ export function getWeeksAtMonth(currentDate: Date) {
   let week: Array<number | null> = initWeek();
 
   for (let i = 0; i < firstDayOfMonth; i++) {
-    // eslint-disable-next-line security/detect-object-injection
     week[i] = null;
   }
 
   for (const day of days) {
     const dayIndex = (firstDayOfMonth + day - 1) % 7;
-    // eslint-disable-next-line security/detect-object-injection
+
     week[dayIndex] = day;
     if (dayIndex === 6 || day === daysInMonth) {
       weeks.push(week);

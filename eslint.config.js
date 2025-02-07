@@ -86,13 +86,11 @@ export default [
       'object-shorthand': 'error',
       'no-multiple-empty-lines': ['error', { max: 1, maxEOF: 0 }],
       eqeqeq: ['error', 'always'],
-      'no-console': ['warn', { allow: ['warn', 'error'] }],
       'no-debugger': 'warn',
       'no-unused-vars': 'off', // TypeScript rule로 대체
       'no-undef': 'off', // TypeScript에서 처리
 
       // Security
-      'security/detect-object-injection': 'warn',
       'security/detect-non-literal-require': 'warn',
       'security/detect-eval-with-expression': 'error',
     },

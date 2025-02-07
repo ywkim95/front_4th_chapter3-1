@@ -38,7 +38,7 @@ const MonthEventView = ({
             <Tr key={weekIndex}>
               {week.map((day, dayIndex) => {
                 const dateString = day ? formatDate(currentDate, day) : '';
-                // eslint-disable-next-line security/detect-object-injection
+
                 const holiday = holidays[dateString];
 
                 return (
