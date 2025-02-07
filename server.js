@@ -30,7 +30,7 @@ app.post('/api/events', async (req, res) => {
     `${__dirname}/src/__mocks__/response/realEvents.json`,
     JSON.stringify({
       events: [...events.events, newEvent],
-    })
+    }),
   );
 
   res.status(201).json(newEvent);
@@ -48,7 +48,7 @@ app.put('/api/events/:id', async (req, res) => {
       `${__dirname}/src/__mocks__/response/realEvents.json`,
       JSON.stringify({
         events: newEvents,
-      })
+      }),
     );
 
     res.json(events.events[eventIndex]);
@@ -65,7 +65,7 @@ app.delete('/api/events/:id', async (req, res) => {
     `${__dirname}/src/__mocks__/response/realEvents.json`,
     JSON.stringify({
       events: events.events.filter((event) => event.id !== id),
-    })
+    }),
   );
 
   res.status(204).send();

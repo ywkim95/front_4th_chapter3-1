@@ -7,6 +7,7 @@ import { beforeEach } from 'vitest';
 import App from '../App';
 import { server } from '../setupTests';
 import { Event, EventForm } from '../types';
+
 const mockToast = vi.fn();
 vi.mock('@chakra-ui/react', async () => {
   const actual = await vi.importActual('@chakra-ui/react');
@@ -185,7 +186,6 @@ describe('일정 CRUD 및 기본 기능', () => {
 });
 
 describe('일정 뷰', () => {
-  // eslint-disable-next-line sonarjs/no-identical-functions
   const renderApp = () =>
     render(
       <ChakraProvider>
@@ -315,7 +315,6 @@ describe('일정 뷰', () => {
 });
 
 describe('검색 기능', () => {
-  // eslint-disable-next-line sonarjs/no-identical-functions
   const renderApp = () =>
     render(
       <ChakraProvider>
@@ -455,7 +454,6 @@ describe('검색 기능', () => {
 });
 
 describe('일정 충돌', () => {
-  // eslint-disable-next-line sonarjs/no-identical-functions
   const renderApp = () =>
     render(
       <ChakraProvider>
